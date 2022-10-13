@@ -26,6 +26,8 @@
     "paths": {
       "*": ["node_modules/*", "src/server/types/*"]
     },
+    "typeRoots": ["./node_modules/@types", "./src/server/types"],
     "lib": ["es2015", "es5", "es6", "dom"]
   }
+
 }

@@ -1,26 +1,33 @@
 import express from 'express';
-import { CameraList, closeQuietly } from '@tsed/gphoto2-driver';
+import { Camera, CameraList, closeQuietly } from '@tsed/gphoto2-driver';
 import dotenv from 'dotenv';
-import path from 'path';
-import fs from 'fs';
-import { projectExists } from '../../functions/check_project.js';
-import { get_identifier } from '../../functions/get_identifier.js';
+import camera from '../../controllers/camera.controller';
 
 const router = express.Router();
 dotenv.config();
-
 const cameraList = new CameraList().load();
+
 console.log('Nb camera', cameraList.size);
-
+let connected_camera: Camera | undefined;
 if (cameraList.size) {
-  const camera = cameraList.getCamera(0);
+  connected_camera = cameraList.getCamera(0);
   console.log('Camera =>', camera);
-
-  //   cameraFile.save(path.join(__dirname, 'capture.jpeg'));
-
-  //   closeQuietly(cameraFile);
-  //   closeQuietly(camera);
 }
+
+cameraList.close();
+
+router.get(
+  '/capture',
+  (
+    _req: express.Request,
+    res: express.Response,
+    next: express.NextFunction,
+  ) => {
+    res.camera = connected_camera;
+    next(connected_camera);
+  },
+  camera.capture,
+);
 
 // //capture image
 // router.get('/capture/:creator/:project/:prefix', async (req, res) => {

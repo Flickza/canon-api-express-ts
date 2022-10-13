@@ -9,14 +9,14 @@ export interface IError {
 /**
  * NOT_FOUND(404) middleware to catch error response
  *
- * @param  {object}   req
+ * @param  {object}   _req
  * @param  {object}   res
- * @param  {function} next
+ * @param  {function} _next
  */
 export function notFoundErrorHandler(
-  req: express.Request,
+  _req: express.Request,
   res: express.Response,
-  next: express.NextFunction,
+  _next: express.NextFunction,
 ) {
   res.status(HttpStatus.NOT_FOUND).json({
     success: false,
@@ -31,15 +31,15 @@ export function notFoundErrorHandler(
  * Generic error response middleware
  *
  * @param  {object}   err
- * @param  {object}   req
+ * @param  {object}   _req
  * @param  {object}   res
- * @param  {function} next
+ * @param  {function} _next
  */
 export function errorHandler(
   err: IError,
-  req: express.Request,
+  _req: express.Request,
   res: express.Response,
-  next: express.NextFunction,
+  _next: express.NextFunction,
 ) {
   res.status(err.status || HttpStatus.INTERNAL_SERVER_ERROR).json({
     success: false,
