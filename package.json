@@ -1,20 +1,37 @@
 {
-  "name": "canon-api",
-  "version": "0.1.0",
-  "private": true,
+  "name": "canon-api-web",
+  "version": "1.0.0",
+  "description": "A web interface for controlling a canon camera",
+  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Flickza/canon-api-web.git"
+  },
+  "keywords": [
+    "canon",
+    "camera",
+    "express",
+    "node",
+    "gphoto2"
+  ],
+  "author": "Adel Johan Holm Gundersen",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Flickza/canon-api-web/issues"
+  },
+  "homepage": "https://github.com/Flickza/canon-api-web#readme",
   "dependencies": {
-    "next": "12.3.1",
-    "react": "18.2.0",
-    "react-dom": "18.2.0"
-  },
-  "devDependencies": {
-    "eslint": "8.25.0",
-    "eslint-config-next": "12.3.1"
+    "dat.gui": "^0.7.9",
+    "dotenv": "^16.0.2",
+    "express": "^4.18.1",
+    "express-json": "^1.0.0",
+    "fs": "0.0.1-security",
+    "request": "^2.88.2",
+    "temp": "^0.9.4"
   }
 }
