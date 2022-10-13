@@ -3,9 +3,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 
 //routes
-import homeRoute from '../routes/index.js';
-import cameraRoute from '../routes/camera.js';
-import storageRoute from '../routes/storage.js';
+import indexRoutes from '../routes/index.route';
+import { notFoundErrorHandler, errorHandler } from '../middleware/apiErrorHandler';
 
 //create express app
 const app = express();
@@ -29,12 +28,14 @@ app.use(
 );
 
 //set static folder location route
-app.use(express.static('src'));
 app.use('/scripts', express.static('node_modules/dat.gui/build/'));
 
 //Routes
-app.use('/', homeRoute);
-app.use('/camera', cameraRoute);
-app.use('/storage', storageRoute);
+app.use('/', indexRoutes);
+
+// Error Handler
+app.use(notFoundErrorHandler);
+
+app.use(errorHandler);
 
 export default app;
