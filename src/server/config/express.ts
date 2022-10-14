@@ -1,10 +1,14 @@
 //Server
 import express from 'express';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 //routes
 import indexRoutes from '../routes/index.route';
-import { notFoundErrorHandler, errorHandler } from '../middleware/apiErrorHandler';
+import {
+  notFoundErrorHandler,
+  errorHandler,
+} from '../middleware/apiErrorHandler';
 
 //create express app
 const app = express();
@@ -12,6 +16,7 @@ const app = express();
 //import environment variables
 dotenv.config();
 
+app.use(cors());
 //set json data limit to 50mb
 app.use(
   express.json({
