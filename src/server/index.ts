@@ -25,6 +25,6 @@ process.on('SIGINT', function () {
 });
 
 process.on('beforeExit', function () {
-  console.log('Caught interrupt signal');
+  console.log('BeforeExit');
   process.exit();
 });

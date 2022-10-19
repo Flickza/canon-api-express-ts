@@ -2,7 +2,6 @@ import express from 'express';
 import { connection } from '../index';
 
 const get_creators = (_req: express.Request, res: express.Response) => {
-  console.log(_req.hostname)
   connection.query(
     'SELECT * FROM arkivskaper',
     (err, results, _fields) => {
@@ -13,7 +12,7 @@ const get_creators = (_req: express.Request, res: express.Response) => {
   );
 };
 const new_creators = (req: express.Request, res: express.Response) => {
-  const creator_name = req.params.creator_name;
+  const creator_name = req.params.creator_name.toUpperCase();
   connection.query(
     `INSERT INTO arkivskaper SET ?`,
     { navn: creator_name },
