@@ -15,7 +15,10 @@ const new_creators = (req: express.Request, res: express.Response) => {
   const creator_name = req.params.creator_name.toUpperCase();
   connection.query(
     `INSERT INTO arkivskaper SET ?`,
-    { navn: creator_name },
+    {
+      navn: creator_name,
+      path: `/${creator_name}`,
+    },
     (err, results, _fields) => {
       if (err) return res.status(400).send(err);
       console.log(results);
