@@ -49,6 +49,7 @@ const new_series = (
           },
         );
       }
+      return;
     },
   );
 };
