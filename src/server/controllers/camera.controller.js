@@ -46,7 +46,7 @@ const save_to_path = async (_req, res) => {
       return res.status(400).send('no id or filename provided');
 
     connection.query(
-      `SELECT * FROM arkivserie WHERE id=${id}`,
+      `SELECT * FROM protokoll WHERE id=${id}`,
       async (err, results, _fields) => {
         /* Returning an error if there is one. */
         if (err) return res.status(400).send(err);
@@ -65,16 +65,9 @@ const save_to_path = async (_req, res) => {
         }
 
         /* Getting the index of the last file in the directory. */
-        const index = await getIndex(
+        const newIndex = await getIndex(
           path.join(ROOT, `${PATH_FROM_DB}`),
         );
-
-        let newIndex = 0;
-        if (index === 0) {
-          newIndex = 1;
-        } else {
-          newIndex = index + 1;
-        }
 
         /* Creating a new filename with the index appended to the end of the filename. */
         const FILENAME_WITH_INDEX = `${filename}_${newIndex}.jpg`;
@@ -86,7 +79,7 @@ const save_to_path = async (_req, res) => {
         );
 
         fs.rename(TEMP_IMAGE_PATH, imagePATH, (err) => {
-          if (err) return console.error(er);
+          if (err) return console.error(err);
 
           console.log('file saved. ', imagePATH);
 
@@ -94,7 +87,7 @@ const save_to_path = async (_req, res) => {
           connection.query(
             `INSERT INTO filer SET ?`,
             {
-              arkivserie_id: id,
+              protokoll_id: id,
               fil_navn: FILENAME_WITH_INDEX,
               path: imagePATH,
             },

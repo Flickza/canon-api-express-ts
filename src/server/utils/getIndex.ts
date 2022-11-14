@@ -4,8 +4,7 @@ export const getIndex = (path: string): Promise<number> => {
   return new Promise((resolve, reject) => {
     fs.readdir(path, (err, files) => {
       if (err) reject(err);
-      if (!files) return;
-      if (files && files.length < 1) {
+      if (files.length < 1) {
         resolve(0);
       } else {
         // get all files from dir
@@ -17,9 +16,22 @@ export const getIndex = (path: string): Promise<number> => {
           f.splice(index_temp, 1);
         }
         if (f.length > 0) {
-          const lastFile = f[f.length - 1].split('_');
-          const number = lastFile[lastFile.length - 1].split('.')[0];
-          resolve(parseInt(number));
+          const highestIndex = f
+            .map((x) => {
+              const jpgnumber: Array<string> = x.match(/(_\d+.jpg)/g)!;
+              if (jpgnumber.length > 0) {
+                return jpgnumber[0]
+                  .replace(/_/g, '')
+                  .replace(/.jpg/g, '');
+              } else {
+                return undefined;
+              }
+            })
+            .filter((x) => x !== undefined)
+            .reduce((a, b) =>
+              Math.max(Number(a), Number(b)).toString(),
+            );
+          resolve(Number(highestIndex) + 1);
         } else {
           resolve(0);
         }

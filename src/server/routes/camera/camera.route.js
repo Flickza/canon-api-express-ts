@@ -5,8 +5,13 @@ import gphoto2 from 'gphoto2';
 
 const router = express.Router();
 dotenv.config();
-var gphoto = new gphoto2.GPhoto2();
-export var cam = undefined;
+let gphoto = new gphoto2.GPhoto2();
+// Negative value or undefined will disable logging, levels 0-4 enable it.
+gphoto.setLogLevel(1);
+gphoto.on('log', function (level, domain, message) {
+  console.log(level, domain, message);
+});
+export let cam = undefined;
 gphoto.list((cameras) => {
   cam = cameras[0];
   if (cam !== undefined) {
