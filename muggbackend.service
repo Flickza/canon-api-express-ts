@@ -1,0 +1,16 @@
+[Unit]
+Description=CANON-API BACKEND
+
+[Service]
+EnvironmentFile=-/etc/default/pi
+ExecStart=/home/pi/node/backend/start.sh
+WorkingDirectory=/home/pi/node/backend
+LimitNOFILE=4096
+IgnoreSIGPIPE=false
+KillMode=process
+User=pi
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
