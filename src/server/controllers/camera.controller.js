@@ -17,6 +17,12 @@ const capture = async (_req, res) => {
     // Take picture with camera object obtained from list
     cam.takePicture({ download: true }, async (er, data) => {
       if (data) {
+        if (!fs.existsSync(path.join(TEMP_PATH))) {
+          console.log(
+            `${TEMP_PATH} does not exist. \n Creating directory.`,
+          );
+          fs.mkdirSync(TEMP_PATH, { recursive: true });
+        }
         fs.writeFile(
           path.join(TEMP_PATH, IMAGE_NAME),
           data,
