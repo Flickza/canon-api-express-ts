@@ -22,10 +22,14 @@ connection.connect((err: any) => {
 process.on('SIGINT', function () {
   console.log('Caught interrupt signal');
   process.kill(process.pid);
-  process.exit();
+  process.exit(0);
 });
 
+process.on('SIGTERM', () => {
+  console.log('Received SIGTERM, shutting down...');
+  process.exit(0);
+});
 process.on('beforeExit', async function () {
   console.log('BeforeExit');
-  process.exit();
+  process.exit(0);
 });

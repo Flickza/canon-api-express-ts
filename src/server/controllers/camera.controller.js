@@ -14,30 +14,44 @@ const ROOT = process.env.DIRECTORY_ROOT;
 
 const capture = async (_req, res) => {
   try {
-    // Take picture with camera object obtained from list
-    cam.takePicture({ download: true }, async (er, data) => {
+    /* Taking a picture from the camera and downloading it to the server. */
+    cam.takePicture({ download: true }, async (err, data) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ err, message: 'Capture failed.' });
+      }
       if (data) {
+        /* Checking if the directory exists, if it does not exist, it creates it. */
         if (!fs.existsSync(path.join(TEMP_PATH))) {
-          console.log(
-            `${TEMP_PATH} does not exist. \n Creating directory.`,
-          );
           fs.mkdirSync(TEMP_PATH, { recursive: true });
         }
+        /* Checking if the file exists, if it does, it deletes it. */
+        if (fs.existsSync(path.join(TEMP_PATH, IMAGE_NAME))) {
+          fs.unlink(path.join(TEMP_PATH, IMAGE_NAME), (err) => {
+            if (err) console.error(err);
+            console.log('temp file deleted.');
+          });
+        }
+        /* Saving the image to the temp folder. */
         fs.writeFile(
           path.join(TEMP_PATH, IMAGE_NAME),
           data,
           (er, data) => {
-            if (er) return console.error(er);
+            if (er) return res.status(500).json(er);
+
             console.log('file saved.', TEMP_IMAGE_PATH);
-            res.download(TEMP_IMAGE_PATH);
+
+            /* Sending the image to the client. */
+            res.status(200).download(TEMP_IMAGE_PATH);
           },
         );
       } else {
-        return;
+        res.status(500).json('Capture failed.');
       }
     });
   } catch (error) {
-    return res.send(error);
+    return res.status(500).json(error);
   }
 };
 
@@ -49,26 +63,23 @@ const save_to_path = async (_req, res) => {
 
     /* Checking if the id or filename is empty. */
     if (!id || !filename)
-      return res.status(400).send('no id or filename provided');
+      return res.status(500).json('no id or filename provided');
 
     connection.query(
       `SELECT * FROM protokoll WHERE id=${id}`,
       async (err, results, _fields) => {
         /* Returning an error if there is one. */
-        if (err) return res.status(400).send(err);
+        if (err) return res.status(500).json(err);
 
         /* Getting the path from the database. */
         const PATH_FROM_DB = results[0].path;
 
         /* Checking if the path and filename are not empty. */
         if (!PATH_FROM_DB && !filename)
-          return res.status(400).send('no path or filename found');
+          return res.status(500).json('no path or filename found');
 
         /* Checking if the directory exists, if it does not exist, it creates it. */
-        if (!fs.existsSync(PATH_FROM_DB)) {
-          console.log(PATH_FROM_DB + 'does not exist');
-          createDir(PATH_FROM_DB);
-        }
+        createDir(PATH_FROM_DB);
 
         /* Getting the index of the last file in the directory. */
         const newIndex = await getIndex(
@@ -98,17 +109,19 @@ const save_to_path = async (_req, res) => {
               path: imagePATH,
             },
             (err, results, _fields) => {
-              if (err) return res.status(400).send(err);
+              if (err) return res.status(500).json(err);
 
               /* Sending a response to the client. */
-              res.send('File cloned to server successfully.');
+              res
+                .status(200)
+                .json('File cloned to server successfully.');
             },
           );
         });
       },
     );
   } catch (error) {
-    return res.send(error);
+    return res.status(500).json(error);
   }
 };
 
